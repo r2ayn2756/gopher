@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ensureEnvLoaded } from "@/lib/utils/env";
+import { Header } from "@/components/site/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +24,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  ensureEnvLoaded()
+  const publicEnv = {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+  }
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__PUBLIC_ENV=${JSON.stringify(publicEnv)};`,
+          }}
+        />
+        <Header />
+        <div className="min-h-dvh">{children}</div>
       </body>
     </html>
   );
