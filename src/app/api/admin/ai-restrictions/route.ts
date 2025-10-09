@@ -13,7 +13,7 @@ const SettingsSchema = z.object({
 })
 
 export async function GET() {
-  const supabase = createSupabaseServer()
+  const supabase = await createSupabaseServer()
   let service: ReturnType<typeof createSupabaseService> | null = null
   try { service = createSupabaseService() } catch {}
   const { data: { user } } = await supabase.auth.getUser()
@@ -32,7 +32,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const supabase = createSupabaseServer()
+  const supabase = await createSupabaseServer()
   let service: ReturnType<typeof createSupabaseService> | null = null
   try { service = createSupabaseService() } catch {}
   const { data: { user } } = await supabase.auth.getUser()
