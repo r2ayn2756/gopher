@@ -3,7 +3,8 @@ import { z } from 'zod'
 import { createSupabaseServer } from '@/lib/supabase/server'
 import { createSupabaseService } from '@/lib/supabase/service'
 
-export const dynamic = 'force-dynamic'
+// Dynamic is already the default for API routes in Next.js 15
+// Explicitly setting it can cause Vercel lambda routing errors
 
 const SettingsSchema = z.object({
   explainDefinitions: z.boolean(),
