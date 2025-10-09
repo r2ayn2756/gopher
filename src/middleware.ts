@@ -33,8 +33,8 @@ export async function middleware(req: NextRequest) {
   const url = new URL(req.url)
   const pathname = url.pathname
 
-  const isProtected = pathname.startsWith('/chat') || pathname.startsWith('/admin')
-  const isAdminRoute = pathname.startsWith('/admin')
+  const isProtected = pathname.startsWith('/chat') || pathname.startsWith('/admin') || pathname.startsWith('/home') || pathname.startsWith('/notes') || pathname.startsWith('/assignment-proofer') || pathname.startsWith('/rubric-builder') || pathname.startsWith('/class-planner')
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/assignment-proofer') || pathname.startsWith('/rubric-builder') || pathname.startsWith('/class-planner')
 
   // Security headers
   res.headers.set('X-Content-Type-Options', 'nosniff')
@@ -58,7 +58,7 @@ export async function middleware(req: NextRequest) {
       .single()
 
     if (prof && (prof as any).role !== 'admin') {
-      return NextResponse.redirect(new URL('/chat', req.url))
+      return NextResponse.redirect(new URL('/home', req.url))
     }
   }
 
@@ -69,5 +69,10 @@ export const config = {
   matcher: [
     '/chat/:path*',
     '/admin/:path*',
+    '/home/:path*',
+    '/notes/:path*',
+    '/assignment-proofer/:path*',
+    '/rubric-builder/:path*',
+    '/class-planner/:path*',
   ],
 }

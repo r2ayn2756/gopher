@@ -127,7 +127,7 @@ export function AiRestrictionsSection() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-dashed border-[var(--color-border)] bg-white p-5 text-sm text-[var(--color-muted)]">
-        These settings are placeholders. In a future update, they will shape the context and constraints passed to the AI for students in your class.
+        These settings shape the context and constraints passed to the AI for students in your class.
       </div>
     </section>
   )

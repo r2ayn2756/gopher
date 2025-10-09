@@ -20,6 +20,7 @@ export interface Database {
           role: Database["public"]["Enums"]["app_role"]
           school_id: string | null
           grade_level: string | null
+          class_code: string | null
           created_at: string
           updated_at: string
         }
@@ -30,6 +31,7 @@ export interface Database {
           role?: Database["public"]["Enums"]["app_role"]
           school_id?: string | null
           grade_level?: string | null
+          class_code?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -40,6 +42,7 @@ export interface Database {
           role?: Database["public"]["Enums"]["app_role"]
           school_id?: string | null
           grade_level?: string | null
+          class_code?: string | null
           created_at?: string
           updated_at?: string
         }

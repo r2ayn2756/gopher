@@ -26,7 +26,7 @@ function LoginContent() {
   const params = useSearchParams()
   const [submitting, setSubmitting] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  const redirectTo = params.get("redirectTo") || "/chat"
+  const redirectTo = params.get("redirectTo") || "/home"
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { remember: true } })
 
@@ -74,7 +74,7 @@ function LoginContent() {
               id="email"
               type="email"
               autoComplete="email"
-              className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-green-600"
+              className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-[#32ff00]"
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? "email-error" : undefined}
               {...register("email")}
@@ -89,7 +89,7 @@ function LoginContent() {
               id="password"
               type="password"
               autoComplete="current-password"
-              className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-green-600"
+              className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-[#32ff00]"
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? "password-error" : undefined}
               {...register("password")}
@@ -103,7 +103,7 @@ function LoginContent() {
               <input id="remember" type="checkbox" className="h-4 w-4" {...register("remember")}/>
               <span className="text-gray-700">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-green-700 hover:underline">Forgot password?</a>
+            <a href="#" className="text-sm text-gray-700 hover:text-black hover:underline">Forgot password?</a>
           </div>
 
           {error && (
@@ -115,7 +115,7 @@ function LoginContent() {
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center rounded-md bg-[#32ff00] px-4 py-2 font-medium text-black transition hover:bg-[#2be600] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? "Signing in..." : "Sign in"}
           </button>
@@ -123,10 +123,10 @@ function LoginContent() {
 
         <div className="mt-6 text-center text-sm">
           <span className="text-gray-600">Don't have an account?</span>{" "}
-          <a href="/register" className="text-green-700 hover:underline">Create one</a>
+          <a href="/register" className="text-gray-700 hover:text-black hover:underline">Create one</a>
         </div>
 
-        <div className="mt-6 rounded-md bg-green-50 p-3 text-sm">
+        <div className="mt-6 rounded-md bg-gray-50 p-3 text-sm">
           <p className="font-medium text-gray-900">Admins</p>
           <p className="text-gray-700">Admins use the same sign-in. After login, admins are redirected to the dashboard automatically.</p>
         </div>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ensureEnvLoaded } from "@/lib/utils/env";
-import { Header } from "@/components/site/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,8 +38,7 @@ export default function RootLayout({
             __html: `window.__PUBLIC_ENV=${JSON.stringify(publicEnv)};`,
           }}
         />
-        <Header />
-        <div className="min-h-dvh">{children}</div>
+        {children}
       </body>
     </html>
   );

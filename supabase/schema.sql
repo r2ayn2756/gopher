@@ -33,6 +33,7 @@ create table if not exists public.profiles (
   role app_role not null default 'student',
   school_id text,
   grade_level text,
+  class_code text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
