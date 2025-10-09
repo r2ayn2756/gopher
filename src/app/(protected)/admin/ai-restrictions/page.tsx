@@ -2,6 +2,8 @@
 import * as React from 'react'
 import { AiRestrictionsSection } from '@/components/admin/ai-restrictions-section'
 
+export const dynamic = 'force-dynamic'
+
 export default function AdminAiRestrictionsPage() {
   return (
     <div className="mx-auto max-w-5xl p-6 text-black">

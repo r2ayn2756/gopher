@@ -12,7 +12,7 @@ const BodySchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const supabase = createSupabaseServer()
+    const supabase = await createSupabaseServer()
     const admin = createSupabaseService()
     const {
       data: { user },

@@ -10,7 +10,7 @@ const BodySchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const supabase = createSupabaseServer()
+    const supabase = await createSupabaseServer()
     const admin = createSupabaseService()
     const { data: { user }, error: userErr } = await supabase.auth.getUser()
     if (userErr) console.error('auth.getUser error', userErr)
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const supabase = createSupabaseServer()
+    const supabase = await createSupabaseServer()
     const { data: { user } } = await supabase.auth.getUser()
     return NextResponse.json({
       ok: false,

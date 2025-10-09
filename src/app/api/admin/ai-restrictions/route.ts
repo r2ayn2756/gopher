@@ -12,7 +12,7 @@ const SettingsSchema = z.object({
   avoidDirectAnswers: z.boolean(),
 })
 
-export async function GET() {
+export async function GET(_request: Request) {
   const supabase = await createSupabaseServer()
   let service: ReturnType<typeof createSupabaseService> | null = null
   try { service = createSupabaseService() } catch {}
@@ -31,14 +31,14 @@ export async function GET() {
   return NextResponse.json({ settings: (data as any)?.settings ?? null })
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   const supabase = await createSupabaseServer()
   let service: ReturnType<typeof createSupabaseService> | null = null
   try { service = createSupabaseService() } catch {}
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await req.json().catch(() => null)
+  const body = await request.json().catch(() => null)
   const parsed = SettingsSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: 'Invalid body', issues: parsed.error.issues }, { status: 400 })
 
