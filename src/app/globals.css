@@ -1,8 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html {
   scroll-behavior: smooth;
 }
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 :root {
   --background: #ffffff;
@@ -34,30 +36,7 @@ html {
   --size-xl: 32rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--color-primary);
-  --color-accent: var(--color-accent);
-  --color-muted: var(--color-muted);
-  --color-border: var(--color-border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  /* Expose spacing and sizing tokens */
-  --spacing-1: var(--spacing-1);
-  --spacing-2: var(--spacing-2);
-  --spacing-3: var(--spacing-3);
-  --spacing-4: var(--spacing-4);
-  --spacing-6: var(--spacing-6);
-  --spacing-8: var(--spacing-8);
-  --spacing-12: var(--spacing-12);
-  --size-xs: var(--size-xs);
-  --size-sm: var(--size-sm);
-  --size-md: var(--size-md);
-  --size-lg: var(--size-lg);
-  --size-xl: var(--size-xl);
-}
+/* Theme tokens are already defined in :root above and available via var(--name) */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -91,12 +70,15 @@ body {
   100% { transform: translateY(0); }
 }
 
-@utility animate-subtle-pulse {
-  animation: subtle-pulse 1.5s ease-in-out infinite;
-}
+/* Custom animation utilities */
+@layer utilities {
+  .animate-subtle-pulse {
+    animation: subtle-pulse 1.5s ease-in-out infinite;
+  }
 
-@utility animate-float {
-  animation: float 3s ease-in-out infinite;
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
 }
 
 /* Typography defaults for content areas */

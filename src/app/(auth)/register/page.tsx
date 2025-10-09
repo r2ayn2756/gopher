@@ -8,8 +8,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { createSupabaseBrowser } from "@/lib/supabase/client"
 import { LandingNav } from "@/components/site/landing-nav"
 
-export const dynamic = 'force-dynamic'
-
 const schema = z
   .object({
     email: z.string().email(),

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ensureEnvLoaded } from "@/lib/utils/env";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +22,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  ensureEnvLoaded()
+  // Environment variables are automatically injected by Next.js at build time
+  // No need for runtime loading in layout - Vercel handles this
   const publicEnv = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
