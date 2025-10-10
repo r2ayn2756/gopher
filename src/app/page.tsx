@@ -4,8 +4,6 @@ export default function Home() {
       <LandingNav />
       <CinematicHero />
 
-      <ValueProposition />
-
       <ForTeachers />
 
       <HowStudentsLearn />
@@ -57,7 +55,6 @@ export default function Home() {
 
 import { LandingNav } from "@/components/site/landing-nav"
 import { CinematicHero } from "@/components/site/cinematic-hero"
-import { ValueProposition } from "@/components/site/value-proposition"
 import { ForTeachers } from "@/components/site/for-teachers"
 import { HowStudentsLearn } from "@/components/site/how-students-learn"
 import { SecurityCompliance } from "@/components/site/security-compliance"
