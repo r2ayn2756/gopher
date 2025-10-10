@@ -27,25 +27,64 @@ export async function GET(req: Request) {
     ? 'id, user_id, title, status, started_at, ended_at, profiles:profiles!inner(username, full_name, class_code)'
     : 'id, user_id, title, status, started_at, ended_at'
 
+  if (!isAdmin) {
+    // Regular users only see their own conversations
+    let query = supabase
+      .from('conversations')
+      .select(baseSelect as any, { count: 'estimated' })
+      .neq('status', 'deleted' as any)
+      .eq('user_id', user.id as any)
+      .order('started_at', { ascending: false })
+
+    if (status) query = query.eq('status', status as any)
+    if (since) query = query.gte('started_at', since)
+
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+    const { data, count, error } = await query.range(from, to)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ items: data, page, pageSize, total: count ?? 0 })
+  }
+
+  // ADMIN LOGIC: Filter by class_code at the profile level first
+  if (!adminClassCode) {
+    // No class code on admin profile -> return empty
+    return NextResponse.json({ items: [], page, pageSize, total: 0 })
+  }
+
+  // First, get all student user IDs in this admin's class
+  const { data: studentsInClass, error: studentsError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('class_code', adminClassCode)
+    .eq('role', 'student')
+
+  if (studentsError) {
+    return NextResponse.json({ error: studentsError.message }, { status: 500 })
+  }
+
+  const studentUserIds = (studentsInClass || []).map((s: any) => s.id)
+
+  // If no students in class, return empty
+  if (studentUserIds.length === 0) {
+    return NextResponse.json({ items: [], page, pageSize, total: 0 })
+  }
+
+  // Now query conversations only for these specific student user IDs
   let query = supabase
     .from('conversations')
-    .select(baseSelect as any, { count: 'estimated' }) // Use estimated for faster queries
+    .select(baseSelect as any, { count: 'estimated' })
     .neq('status', 'deleted' as any)
+    .in('user_id', studentUserIds as any)
     .order('started_at', { ascending: false })
 
-  if (!isAdmin) {
-    query = query.eq('user_id', user.id as any)
-  } else {
-    // Admins can only see conversations for students in their class_code
-    if (adminClassCode) {
-      // Filter via the joined profile's class_code
-      query = query.eq('profiles.class_code' as any, adminClassCode as any)
-    } else {
-      // No class code on admin profile -> return empty
-      return NextResponse.json({ items: [], page, pageSize, total: 0 })
-    }
-    if (filterUserId) {
+  if (filterUserId) {
+    // Verify the filtered user is actually in this admin's class
+    if (studentUserIds.includes(filterUserId)) {
       query = query.eq('user_id', filterUserId as any)
+    } else {
+      // Requested user is not in this admin's class
+      return NextResponse.json({ items: [], page, pageSize, total: 0 })
     }
   }
 

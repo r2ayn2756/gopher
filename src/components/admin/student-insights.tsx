@@ -240,3 +240,5 @@ export function StudentInsights({ insights, loading, onRefresh }: StudentInsight
     </div>
   )
 }
+
+
