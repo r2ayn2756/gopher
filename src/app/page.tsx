@@ -4,6 +4,8 @@ export default function Home() {
       <LandingNav />
       <CinematicHero />
 
+      <AIComparison />
+
       {/* Compliance summary (two-box layout) */}
       <section id="schools" className="border-b border-[var(--color-border)] bg-white">
         <div className="mx-auto max-w-6xl px-4 py-12">
@@ -96,6 +98,7 @@ export default function Home() {
 import { HelpCircle, Sparkles, ShieldCheck, BookOpen, Clock, BarChart3 } from "lucide-react"
 import { LandingNav } from "@/components/site/landing-nav"
 import { CinematicHero } from "@/components/site/cinematic-hero"
+import { AIComparison } from "@/components/site/ai-comparison"
 import { Testimonials } from "@/components/site/testimonials"
 import { RoadmapHow } from "@/components/site/roadmap-how"
 
