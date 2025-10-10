@@ -58,8 +58,8 @@ function ChatGPTMockChat() {
       <ul className="flex min-h-full flex-col justify-end gap-3">
         {CHATGPT_SCRIPT.slice(0, visibleCount).map((m, i) => (
           <li key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
-            <div className={`inline-block max-w-[80%] rounded-2xl px-4 py-2.5 text-[15px] md:text-[16px] animate-[fadeIn_.5s_ease] ${m.role === 'user' ? 'bg-gray-100 text-gray-900' : 'bg-gray-800 text-gray-100'}`}>
-              <div className="prose prose-sm max-w-none leading-relaxed prose-invert">
+            <div className={`inline-block max-w-[80%] rounded-2xl px-4 py-2.5 text-[15px] md:text-[16px] animate-[fadeIn_.5s_ease] ${m.role === 'user' ? 'bg-gray-100 text-gray-900' : 'bg-gray-100 text-gray-900 border border-gray-200'}`}>
+              <div className="prose prose-sm max-w-none leading-relaxed text-gray-900">
                 <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
                   {m.content}
                 </ReactMarkdown>
