@@ -147,11 +147,11 @@ Guidelines:
     try {
       const res = await client.chat.completions.create({
         model,
-        temperature: 0.5,
-        max_tokens: 200, // Reduce for faster responses
+        temperature: 0.3, // Lower temperature for more consistent responses
+        max_tokens: 4000, // Increase for complex rubric generation
         messages: messages as any,
       }, {
-        timeout: 15000, // 15s timeout to prevent hanging
+        timeout: 30000, // 30s timeout for complex generation
       })
       const out = res.choices?.[0]?.message?.content?.trim() || 'What is your current approach?'
       return out
@@ -173,28 +173,49 @@ Guidelines:
       throw new Error('Missing OPENAI_API_KEY in server environment')
     }
     const client = new OpenAI({ apiKey })
-    const model = (process.env.AI_MODEL || 'gpt-4o-mini').trim()
 
-    try {
-      const res = await client.chat.completions.create({
-        model,
-        temperature: 0.3, // Lower temperature for more consistent JSON
-        max_tokens: 1000, // More tokens for detailed analysis
-        messages: messages as any,
-        response_format: { type: 'json_object' } // Request JSON format
-      }, {
-        timeout: 30000, // 30s timeout for analysis
-      })
-      const out = res.choices?.[0]?.message?.content?.trim() || '{}'
-      return out
-    } catch (err: any) {
-      const status = err?.status || err?.code || err?.response?.status
-      const detail = err?.message || err?.response?.data?.error?.message || 'Unknown error'
-      if (status === 401) throw new Error('OpenAI authentication failed (401). Check OPENAI_API_KEY.')
-      if (status === 429) throw new Error('OpenAI rate limit hit (429). Please wait and try again.')
-      if (status === 404) throw new Error(`OpenAI model not found: ${model}. Set AI_MODEL or update your access.`)
-      throw new Error(`OpenAI error: ${detail}`)
+    // Try models in order of preference
+    const models = [
+      (process.env.AI_MODEL || 'gpt-4o-mini').trim(),
+      'gpt-4o-mini',
+      'gpt-4',
+      'gpt-3.5-turbo'
+    ]
+
+    for (const model of models) {
+      try {
+        console.log(`Trying AI model: ${model}`)
+        const res = await client.chat.completions.create({
+          model,
+          temperature: 0.1, // Very low temperature for consistent JSON
+          max_tokens: 4000, // More tokens for complex rubric generation
+          messages: messages as any,
+          response_format: { type: 'json_object' } // Request JSON format
+        }, {
+          timeout: 45000, // 45s timeout for analysis
+        })
+        const out = res.choices?.[0]?.message?.content?.trim() || '{}'
+        console.log(`Successfully used model: ${model}`)
+        return out
+      } catch (err: any) {
+        const status = err?.status || err?.code || err?.response?.status
+        console.warn(`Model ${model} failed:`, err?.message || err)
+
+        // If it's the last model or a critical error, throw
+        if (model === models[models.length - 1] || status === 401 || status === 404) {
+          const detail = err?.message || err?.response?.data?.error?.message || 'Unknown error'
+          if (status === 401) throw new Error('OpenAI authentication failed (401). Check OPENAI_API_KEY.')
+          if (status === 429) throw new Error('OpenAI rate limit hit (429). Please wait and try again.')
+          if (status === 404) throw new Error(`OpenAI model not found: ${model}. Set AI_MODEL or update your access.`)
+          throw new Error(`OpenAI error: ${detail}`)
+        }
+
+        // Try the next model
+        continue
+      }
     }
+
+    throw new Error('All AI models failed')
   }
 }
 
