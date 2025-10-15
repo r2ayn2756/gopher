@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createSupabaseServer } from '@/lib/supabase/server'
+import { createSupabaseService } from '@/lib/supabase/service'
 import type { TablesUpdate } from '@/types/supabase'
 
 const PatchSchema = z.object({
@@ -96,7 +97,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     }
   }
 
-  const { error } = await db.from('conversations').update({ status: 'deleted' }).eq('id', id)
+  // Use service role to bypass RLS for the deletion
+  const serviceSupabase = createSupabaseService()
+  const { error } = await (serviceSupabase as any).from('conversations').update({ status: 'deleted' }).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })
 }
