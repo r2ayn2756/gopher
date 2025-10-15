@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 
-// Navigation: How it works, Sign in, Book a Demo (v2)
+// Navigation: How it works, Sign in, Book a Demo
+// Updated: 2025-10-15 - Removed Product and Docs links
 export function LandingNav() {
   const [scrolled, setScrolled] = React.useState(false)
 
