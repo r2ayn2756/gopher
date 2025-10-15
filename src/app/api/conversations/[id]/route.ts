@@ -67,8 +67,35 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const db: any = supabase
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data: conv, error: convErr } = await db.from('conversations').select('user_id').eq('id', id).single()
-  if (convErr || !conv || (conv as any).user_id !== user.id) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Get conversation with user profile to check class_code
+  const { data: conv, error: convErr } = await db
+    .from('conversations')
+    .select('user_id, profiles:profiles!conversations_user_id_fkey(class_code)')
+    .eq('id', id)
+    .single()
+  if (convErr || !conv) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Check if user owns this conversation
+  const isOwner = (conv as any).user_id === user.id
+
+  // If not owner, check if user is admin with access to this student's class
+  if (!isOwner) {
+    const { data: prof } = await db
+      .from('profiles')
+      .select('role, class_code')
+      .eq('id', user.id as any)
+      .single()
+    const isAdmin = (prof as any)?.role === 'admin'
+    if (!isAdmin) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+    const adminClass = (prof as any)?.class_code
+    const studentClass = (conv as any)?.profiles?.class_code
+    if (!adminClass || !studentClass || adminClass !== studentClass) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+  }
+
   const { error } = await db.from('conversations').update({ status: 'deleted' }).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })

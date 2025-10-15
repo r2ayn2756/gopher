@@ -148,6 +148,26 @@ export default function AdminPage() {
     }
   }
 
+  const handleDeleteConversation = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      const res = await fetch(`/api/conversations/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      if (!res.ok) throw new Error('Failed to delete conversation')
+
+      // Refresh the conversations list
+      setItems(prevItems => prevItems.filter(item => item.id !== id))
+    } catch (error) {
+      console.error('Failed to delete conversation:', error)
+      alert('Failed to delete conversation. Please try again.')
+    }
+  }
+
   return (
     <div className="mx-auto max-w-6xl p-6 text-black">
 
@@ -317,12 +337,20 @@ export default function AdminPage() {
                     {new Date(it.started_at).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => setViewId(it.id)}
-                      className="rounded-md bg-[#32ff00] px-3 py-1.5 text-black font-medium shadow-sm transition hover:bg-[#2be600]"
-                    >
-                      View
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setViewId(it.id)}
+                        className="rounded-md bg-[#32ff00] px-3 py-1.5 text-black font-medium shadow-sm transition hover:bg-[#2be600]"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleDeleteConversation(it.id)}
+                        className="rounded-md bg-red-600 px-3 py-1.5 text-white font-medium shadow-sm transition hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -366,13 +394,35 @@ function TranscriptDrawer({ id, onClose }: { id: string; onClose: () => void }) 
     return () => { active = false }
   }, [id])
 
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      const res = await fetch(`/api/conversations/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      if (!res.ok) throw new Error('Failed to delete conversation')
+      onClose()
+      window.location.reload() // Refresh the page to update the conversation list
+    } catch (error) {
+      console.error('Failed to delete conversation:', error)
+      alert('Failed to delete conversation. Please try again.')
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="h-full w-full flex-1 bg-black/40" onClick={onClose} />
       <div className="h-full w-full max-w-2xl overflow-y-auto border-l border-gray-200 bg-white shadow-xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
           <div className="font-semibold text-gray-900">Conversation Transcript</div>
-          <button onClick={onClose} className="rounded-md bg-[#32ff00] px-3 py-1.5 text-black font-medium hover:bg-[#2be600]">Close</button>
+          <div className="flex gap-2">
+            <button onClick={handleDelete} className="rounded-md bg-red-600 px-3 py-1.5 text-white font-medium hover:bg-red-700">Delete</button>
+            <button onClick={onClose} className="rounded-md bg-[#32ff00] px-3 py-1.5 text-black font-medium hover:bg-[#2be600]">Close</button>
+          </div>
         </div>
         <div className="p-4">
           {loading ? (
