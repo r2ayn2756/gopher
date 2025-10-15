@@ -47,8 +47,9 @@ export async function GET(req: Request) {
   }
 
   // ADMIN LOGIC: Filter by class_code at the profile level first
-  if (!adminClassCode) {
-    // No class code on admin profile -> return empty
+  // CRITICAL: Reject NULL class codes to prevent data leakage across admins
+  if (!adminClassCode || adminClassCode.trim() === '') {
+    console.warn('Admin has no class code or empty class code, returning empty results')
     return NextResponse.json({ items: [], page, pageSize, total: 0 })
   }
 

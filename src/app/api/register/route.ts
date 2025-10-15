@@ -72,6 +72,19 @@ export async function POST(req: Request) {
       // undefined_column: class_code not present yet. Retry without it so registration can proceed.
       const retry = await supabase.from('profiles').insert(baseInsert)
       error = retry.error ?? null
+
+      // If retry succeeded and this was an admin with a generated class code, try to update it
+      if (!error && admin && generatedClassCode) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ class_code: generatedClassCode })
+          .eq('id', id)
+
+        if (updateError) {
+          console.warn('Failed to update admin class_code after registration:', updateError)
+          // Don't fail registration, but log the issue
+        }
+      }
     }
     if (error) {
       const status = error.code === '23505' ? 409 : 500

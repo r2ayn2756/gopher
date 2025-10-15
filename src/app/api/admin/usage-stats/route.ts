@@ -22,17 +22,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    let adminClassCode = (profile as any)?.class_code
+    const adminClassCode = (profile as any)?.class_code
 
-    // If admin doesn't have a class_code, generate one
-    if (!adminClassCode) {
-      adminClassCode = `CLS-${Math.random().toString(36).slice(2, 6).toUpperCase()}${Date.now().toString().slice(-2)}`
-
-      // Update the admin's profile with the new class_code
-      // Note: Using createSupabaseServer() which has strict typing, so we skip the update
-      // The class code will be generated each time until manually set
-
-      console.log('Generated new class code for admin:', adminClassCode)
+    // CRITICAL: Reject NULL or empty class codes to prevent data leakage
+    if (!adminClassCode || adminClassCode.trim() === '') {
+      console.warn('Admin has no class code or empty class code, returning empty results')
+      return NextResponse.json({ data: [] })
     }
 
     console.log('Admin class code:', adminClassCode)
@@ -56,31 +51,25 @@ export async function GET(req: NextRequest) {
     // First, get student user IDs in the admin's class
     let studentUserIds: string[] = []
 
-    if (adminClassCode) {
-      console.log('Looking for students in class:', adminClassCode)
-      const { data: studentsInClass, error: studentsError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('class_code', adminClassCode)
-        .eq('role', 'student')
+    console.log('Looking for students in class:', adminClassCode)
+    const { data: studentsInClass, error: studentsError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('class_code', adminClassCode)
+      .eq('role', 'student')
 
-      if (studentsError) {
-        console.error('Error fetching students:', studentsError)
-        return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 })
-      }
+    if (studentsError) {
+      console.error('Error fetching students:', studentsError)
+      return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 })
+    }
 
-      studentUserIds = (studentsInClass || []).map((s: any) => s.id)
-      console.log('Found students:', studentUserIds.length)
+    studentUserIds = (studentsInClass || []).map((s: any) => s.id)
+    console.log('Found students:', studentUserIds.length)
 
-      if (studentUserIds.length === 0) {
-        console.log('No students found in class')
-        // No students in class, but still return the data structure with zeros
-        // This allows the chart to render properly
-      }
-    } else {
-      console.log('No class code for admin')
-      // No class code, return empty result
-      return NextResponse.json({ data: [] })
+    if (studentUserIds.length === 0) {
+      console.log('No students found in class')
+      // No students in class, but still return the data structure with zeros
+      // This allows the chart to render properly
     }
 
     // Query messages grouped by date - only from students in the admin's class

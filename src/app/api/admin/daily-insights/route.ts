@@ -23,15 +23,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    let adminClassCode = (profile as any)?.class_code
+    const adminClassCode = (profile as any)?.class_code
 
-    // If admin doesn't have a class_code, generate one
-    if (!adminClassCode) {
-      adminClassCode = `CLS-${Math.random().toString(36).slice(2, 6).toUpperCase()}${Date.now().toString().slice(-2)}`
-
-      // Update the admin's profile with the new class_code
-      // Note: Using createSupabaseServer() which has strict typing, so we skip the update
-      // The class code will be generated each time until manually set
+    // CRITICAL: Reject NULL or empty class codes to prevent data leakage
+    if (!adminClassCode || adminClassCode.trim() === '') {
+      console.warn('Admin has no class code or empty class code, returning empty results')
+      return NextResponse.json({ insights: [] })
     }
 
     // Get time range from query params (default to last 7 days)

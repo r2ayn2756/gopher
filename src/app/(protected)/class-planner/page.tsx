@@ -425,62 +425,76 @@ function LessonPlanView({ plan }: { plan: LessonPlan }) {
 }
 
 function generatePrintableHTML(plan: LessonPlan, subject: string, gradeLevel: string): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>${plan.title}</title>
-      <style>
-        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-        h1 { color: #1f2937; margin-bottom: 8px; }
-        .subtitle { color: #6b7280; margin-bottom: 24px; }
-        h2 { color: #374151; margin-top: 24px; margin-bottom: 12px; border-bottom: 2px solid #32ff00; padding-bottom: 4px; }
-        ul { margin-left: 24px; }
-        .activity { background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; margin: 8px 0; border-radius: 6px; }
-        .activity-header { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 8px; }
-        @media print {
-          body { margin: 20px; }
-        }
-      </style>
-    </head>
-    <body>
-      <h1>${plan.title}</h1>
-      <div class="subtitle">${subject} | ${gradeLevel} | ${plan.duration}</div>
+  let html = '<!DOCTYPE html>\n<html>\n<head>\n'
+  html += `<title>${plan.title}</title>\n`
+  html += '<style>\n'
+  html += 'body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }\n'
+  html += 'h1 { color: #1f2937; margin-bottom: 8px; font-size: 28px; }\n'
+  html += '.subtitle { color: #6b7280; margin-bottom: 24px; font-size: 14px; }\n'
+  html += 'h2 { color: #374151; margin-top: 24px; margin-bottom: 12px; font-size: 18px; font-weight: 600; }\n'
+  html += '.section { margin-bottom: 20px; }\n'
+  html += 'table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 16px; }\n'
+  html += 'th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }\n'
+  html += 'th { background-color: #f9fafb; font-weight: 600; color: #1f2937; }\n'
+  html += 'ul { margin: 8px 0; padding-left: 24px; }\n'
+  html += 'li { margin: 4px 0; color: #374151; }\n'
+  html += '.activity-row { background-color: #ffffff; }\n'
+  html += '.activity-row:nth-child(even) { background-color: #f9fafb; }\n'
+  html += '.duration-cell { text-align: center; width: 120px; font-weight: 500; }\n'
+  html += 'p { color: #374151; margin: 8px 0; }\n'
+  html += '@media print { body { margin: 20px; } }\n'
+  html += '</style>\n</head>\n<body>\n'
 
-      <h2>Learning Objectives</h2>
-      <ul>
-        ${plan.objectives.map(obj => `<li>${obj}</li>`).join('')}
-      </ul>
+  // Title and subtitle
+  html += `<h1>${plan.title}</h1>\n`
+  html += `<div class="subtitle">${subject}${gradeLevel ? ' • ' + gradeLevel : ''} • ${plan.duration}</div>\n`
 
-      <h2>Materials Needed</h2>
-      <ul>
-        ${plan.materials.map(mat => `<li>${mat}</li>`).join('')}
-      </ul>
+  // Learning Objectives
+  html += '<div class="section">\n<h2>Learning Objectives</h2>\n<ul>\n'
+  plan.objectives.forEach(obj => {
+    html += `<li>${obj}</li>\n`
+  })
+  html += '</ul>\n</div>\n'
 
-      <h2>Lesson Activities</h2>
-      ${plan.activities.map(activity => `
-        <div class="activity">
-          <div class="activity-header">
-            <span>${activity.phase}</span>
-            <span>${activity.duration}</span>
-          </div>
-          <div>${activity.description}</div>
-        </div>
-      `).join('')}
+  // Materials Needed
+  html += '<div class="section">\n<h2>Materials Needed</h2>\n<ul>\n'
+  plan.materials.forEach(mat => {
+    html += `<li>${mat}</li>\n`
+  })
+  html += '</ul>\n</div>\n'
 
-      <h2>Assessment</h2>
-      <p>${plan.assessment}</p>
+  // Lesson Activities (table format like rubric builder)
+  html += '<div class="section">\n<h2>Lesson Activities</h2>\n'
+  html += '<table>\n<thead>\n<tr>\n'
+  html += '<th>Phase</th>\n<th>Duration</th>\n<th>Description</th>\n'
+  html += '</tr>\n</thead>\n<tbody>\n'
+  plan.activities.forEach(activity => {
+    html += '<tr class="activity-row">\n'
+    html += `<td><strong>${activity.phase}</strong></td>\n`
+    html += `<td class="duration-cell">${activity.duration}</td>\n`
+    html += `<td>${activity.description}</td>\n`
+    html += '</tr>\n'
+  })
+  html += '</tbody>\n</table>\n</div>\n'
 
-      <h2>Differentiation Strategies</h2>
-      <ul>
-        ${plan.differentiation.map(diff => `<li>${diff}</li>`).join('')}
-      </ul>
+  // Assessment
+  html += '<div class="section">\n<h2>Assessment</h2>\n'
+  html += `<p>${plan.assessment}</p>\n</div>\n`
 
-      ${plan.homework ? `
-        <h2>Homework/Extension</h2>
-        <p>${plan.homework}</p>
-      ` : ''}
-    </body>
-    </html>
-  `
+  // Differentiation Strategies
+  html += '<div class="section">\n<h2>Differentiation Strategies</h2>\n<ul>\n'
+  plan.differentiation.forEach(diff => {
+    html += `<li>${diff}</li>\n`
+  })
+  html += '</ul>\n</div>\n'
+
+  // Homework/Extension (optional)
+  if (plan.homework) {
+    html += '<div class="section">\n<h2>Homework/Extension</h2>\n'
+    html += `<p>${plan.homework}</p>\n</div>\n`
+  }
+
+  html += '</body>\n</html>'
+
+  return html
 }
