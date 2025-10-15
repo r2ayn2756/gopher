@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 
+// Navigation: How it works, Sign in, Book a Demo (v2)
 export function LandingNav() {
   const [scrolled, setScrolled] = React.useState(false)
 
