@@ -56,7 +56,7 @@ export function HowStudentsLearn() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative border-b border-[var(--color-border)] bg-gradient-to-b from-gray-50 via-white to-gray-50 py-20">
+    <section id="how" ref={sectionRef} className="relative border-b border-[var(--color-border)] bg-gradient-to-b from-gray-50 via-white to-gray-50 py-20">
       {/* Decorative background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/3 top-0 h-96 w-96 rounded-full bg-[#32ff00]/5 blur-3xl" />
