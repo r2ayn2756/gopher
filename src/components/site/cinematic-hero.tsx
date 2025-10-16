@@ -92,7 +92,7 @@ export function CinematicHero() {
               <span>Book a Demo</span>
               <svg className="ml-2 h-4 w-4 transition-transform duration-700 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
             </a>
-            <a href="#features" className="inline-flex items-center rounded-full border border-[#32ff00]/40 bg-white px-6 py-3 text-gray-900 transition hover:bg-[#32ff00]/5 focus:outline-none focus:ring-2 focus:ring-[#32ff00]/30">See how it works</a>
+            <a href="#how" className="inline-flex items-center rounded-full border border-[#32ff00]/40 bg-white px-6 py-3 text-gray-900 transition hover:bg-[#32ff00]/5 focus:outline-none focus:ring-2 focus:ring-[#32ff00]/30">See how it works</a>
           </div>
 
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-600">
