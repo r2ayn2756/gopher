@@ -170,6 +170,89 @@ export interface Database {
           }
         ]
       }
+      announcements: {
+        Row: {
+          id: string
+          teacher_id: string
+          class_code: string
+          subject: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          teacher_id: string
+          class_code: string
+          subject: string
+          content: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          teacher_id?: string
+          class_code?: string
+          subject?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_teacher_id_fkey"
+            columns: ["teacher_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      announcement_responses: {
+        Row: {
+          id: string
+          announcement_id: string | null
+          sender_id: string
+          recipient_id: string | null
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          announcement_id?: string | null
+          sender_id: string
+          recipient_id?: string | null
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          announcement_id?: string | null
+          sender_id?: string
+          recipient_id?: string | null
+          content?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcement_responses_announcement_id_fkey"
+            columns: ["announcement_id"]
+            referencedRelation: "announcements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "announcement_responses_sender_id_fkey"
+            columns: ["sender_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "announcement_responses_recipient_id_fkey"
+            columns: ["recipient_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       conversation_stats: {

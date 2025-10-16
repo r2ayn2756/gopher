@@ -66,6 +66,12 @@ export function AppNav() {
           >
             AI Chat
           </a>
+          <a
+            href="/messages"
+            className={`text-sm font-medium transition ${isActive('/messages') ? 'text-[#32ff00]' : 'text-gray-700 hover:text-gray-900'}`}
+          >
+            Messages
+          </a>
 
           {!loading && isAdmin && (
             <>

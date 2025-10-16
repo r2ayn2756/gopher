@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
   const url = new URL(req.url)
   const pathname = url.pathname
 
-  const isProtected = pathname.startsWith('/chat') || pathname.startsWith('/admin') || pathname.startsWith('/home') || pathname.startsWith('/notes') || pathname.startsWith('/assignment-proofer') || pathname.startsWith('/rubric-builder') || pathname.startsWith('/class-planner')
+  const isProtected = pathname.startsWith('/chat') || pathname.startsWith('/admin') || pathname.startsWith('/home') || pathname.startsWith('/notes') || pathname.startsWith('/assignment-proofer') || pathname.startsWith('/rubric-builder') || pathname.startsWith('/class-planner') || pathname.startsWith('/messages')
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/assignment-proofer') || pathname.startsWith('/rubric-builder') || pathname.startsWith('/class-planner')
 
   // Security headers
@@ -74,5 +74,6 @@ export const config = {
     '/assignment-proofer/:path*',
     '/rubric-builder/:path*',
     '/class-planner/:path*',
+    '/messages/:path*',
   ],
 }
