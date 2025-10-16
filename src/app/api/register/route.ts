@@ -77,6 +77,7 @@ export async function POST(req: Request) {
       if (!error && admin && generatedClassCode) {
         const { error: updateError } = await supabase
           .from('profiles')
+          // @ts-expect-error - Supabase type inference issue with optional class_code field
           .update({ class_code: generatedClassCode })
           .eq('id', id)
 

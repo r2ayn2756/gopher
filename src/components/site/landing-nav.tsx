@@ -2,8 +2,7 @@
 
 import * as React from 'react'
 
-// Navigation: How it works, Sign in, Book a Demo
-// Updated: 2025-10-15 - Removed Product and Docs links
+// Navigation: How it works, Product, Docs, Sign in, Book a Demo
 export function LandingNav() {
   const [scrolled, setScrolled] = React.useState(false)
 
@@ -25,6 +24,8 @@ export function LandingNav() {
         </a>
         <nav className="hidden items-center gap-8 text-sm text-gray-700 md:flex">
           <a href="#how" className="hover:text-black leading-8">How it works</a>
+          <a href="#product" className="hover:text-black leading-8">Product</a>
+          <a href="#docs" className="hover:text-black leading-8">Docs</a>
           <a href="/login" className="hover:text-black leading-8">Sign in</a>
           <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-8 items-center rounded-full bg-[#32ff00]/90 px-4 text-black shadow-[0_3px_12px_rgba(0,0,0,0.12)] transition hover:bg-[#2be600] focus:outline-none focus:ring-2 focus:ring-[#32ff00]/30">
             Book a Demo

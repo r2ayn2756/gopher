@@ -14,7 +14,7 @@ const schema = z.object({
     .string()
     .min(8, "At least 8 characters")
     .max(128, "Too long"),
-  remember: z.boolean(),
+  remember: z.boolean().optional().default(true),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -26,7 +26,7 @@ function LoginContent() {
   const [error, setError] = React.useState<string | null>(null)
   const redirectTo = params.get("redirectTo") || "/home"
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { remember: true } })
+  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema), defaultValues: { remember: true } })
 
   const onSubmit = async (values: FormValues) => {
     setError(null)
