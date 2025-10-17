@@ -48,7 +48,7 @@ export async function GET(_req: Request) {
         *,
         teacher:profiles!announcements_teacher_id_fkey(username, full_name)
       `)
-      .eq('class_code', profile.class_code)
+      .eq('class_code', (profile as any).class_code)
       .order('created_at', { ascending: false })
 
     if (announcementsError) {
@@ -100,11 +100,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    if (profile.role !== 'admin') {
+    if ((profile as any).role !== 'admin') {
       return NextResponse.json({ error: 'Only teachers can create announcements' }, { status: 403 })
     }
 
-    if (!profile.class_code) {
+    if (!(profile as any).class_code) {
       return NextResponse.json({ error: 'Teacher must have a class code' }, { status: 400 })
     }
 
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
       .from('announcements')
       .insert({
         teacher_id: user.id,
-        class_code: profile.class_code,
+        class_code: (profile as any).class_code,
         subject,
         content,
       })

@@ -55,8 +55,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     // Check access: user must be in same class or be the teacher
     const hasAccess =
-      profile.class_code === announcement.class_code ||
-      announcement.teacher_id === user.id
+      (profile as any).class_code === (announcement as any).class_code ||
+      (announcement as any).teacher_id === user.id
 
     if (!hasAccess) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
@@ -134,7 +134,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
 
     // Check if user is in the same class
-    if (profile.class_code !== announcement.class_code) {
+    if ((profile as any).class_code !== (announcement as any).class_code) {
       return NextResponse.json({ error: 'You can only respond to announcements in your class' }, { status: 403 })
     }
 
