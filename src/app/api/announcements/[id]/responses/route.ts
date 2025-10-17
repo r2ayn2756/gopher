@@ -9,9 +9,9 @@ const CreateResponseSchema = z.object({
 })
 
 // GET /api/announcements/[id]/responses - Get responses to an announcement
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const announcementId = params.id
+    const { id: announcementId } = await params
 
     const cookieStore = await cookies()
     const supabase = createServerClient<Database>(
@@ -83,9 +83,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // POST /api/announcements/[id]/responses - Create a response to an announcement
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const announcementId = params.id
+    const { id: announcementId } = await params
     const json = await req.json()
     const parsed = CreateResponseSchema.safeParse(json)
 

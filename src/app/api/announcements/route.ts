@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createSupabaseService } from '@/lib/supabase/service'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import type { Database } from '@/types/supabase'
@@ -11,7 +10,7 @@ const CreateAnnouncementSchema = z.object({
 })
 
 // GET /api/announcements - List announcements for user's class
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const cookieStore = await cookies()
     const supabase = createServerClient<Database>(
