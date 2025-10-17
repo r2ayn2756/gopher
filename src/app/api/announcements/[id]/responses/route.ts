@@ -143,6 +143,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     // Create response
     const { data: response, error: createError } = await supabase
       .from('announcement_responses')
+      // @ts-expect-error - Supabase type inference issue with announcement_responses insert
       .insert({
         announcement_id: announcementId,
         sender_id: user.id,

@@ -113,6 +113,7 @@ export async function POST(req: Request) {
     // Create announcement
     const { data: announcement, error: createError } = await supabase
       .from('announcements')
+      // @ts-expect-error - Supabase type inference issue with announcements insert
       .insert({
         teacher_id: user.id,
         class_code: (profile as any).class_code,
