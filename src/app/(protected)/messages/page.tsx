@@ -21,7 +21,7 @@ export default function MessagesPage() {
           .eq('id', user.id)
           .single()
 
-        if (profile?.role === 'admin') {
+        if ((profile as any)?.role === 'admin') {
           setIsAdmin(true)
         }
       }
